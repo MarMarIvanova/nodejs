@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "cmd": "node task1.js",
+    "guess": "node task2.js"
   },
   "repository": {
     "type": "git",
@@ -16,5 +18,8 @@
     "url": "https://github.com/MarMarIvanova/nodejs/issues"
   },
   "homepage": "https://github.com/MarMarIvanova/nodejs#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "yargs": "^17.7.2"
+  }
 }
