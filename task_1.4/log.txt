@@ -1,0 +1,2 @@
+user: 1, random: 1, result: WIN
+user: 2, random: 1, result: LOSE
