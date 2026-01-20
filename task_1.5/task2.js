@@ -22,7 +22,9 @@ const currentPath = process.env.CURRENT_PATH;
 const url = new URL(baseUrl + currentPath);
 url.searchParams.set('access_key', apiKey);
 url.searchParams.set('query', city);
-url.searchParams.set('units', process.env.UNITS);
+if (process.env.UNITS) {
+  url.searchParams.set('units', process.env.UNITS);
+}
 
 http
   .get(url, (res) => {
@@ -47,6 +49,11 @@ http
 
       if (json.success === false || json.error) {
         console.log('API Error:', json.error?.info || JSON.stringify(json.error));
+        return;
+      }
+
+      if (!json.location || !json.current) {
+        console.log('Invalid API response structure');
         return;
       }
 
