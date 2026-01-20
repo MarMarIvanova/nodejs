@@ -1,20 +1,17 @@
 {
   "name": "nodejs",
   "version": "1.0.0",
+  "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/MarMarIvanova/nodejs.git"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Maria Ivanova",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/MarMarIvanova/nodejs/issues"
-  },
-  "homepage": "https://github.com/MarMarIvanova/nodejs#readme",
-  "description": ""
+  "dependencies": {
+    "express": "^5.2.1",
+    "uuid": "^8.3.2"
+  }
 }
