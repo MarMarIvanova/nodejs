@@ -123,7 +123,7 @@ router.get('/api/books/:id/download', (req, res) => {
     const fs = require('fs');
     if (!fs.existsSync(book.fileBook)) {
         res.status(404);
-        return res.json({ error: 'Файл книги не существует на сервере' });
+        return res.json({ error: 'Book file does not exist' });
     }
 
     const fileName = book.fileName || path.basename(book.fileBook);
