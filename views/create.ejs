@@ -1,0 +1,14 @@
+<%- include('partials/header', { title: 'Create Book' }) %>
+    <div class="container py-5">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title mb-4">Create New Book</h1>
+                <%- include('partials/book-form', { 
+                    formAction: '/books/create',
+                    submitText: 'Create Book',
+                    cancelUrl: '/books'
+                }) %>
+            </div>
+        </div>
+    </div>
+<%- include('partials/footer') %>

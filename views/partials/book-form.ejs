@@ -1,0 +1,48 @@
+<form action="<%= formAction %>" method="POST" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" id="title" name="title" value="<%= typeof book !== 'undefined' && book.title ? book.title : '' %>" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea class="form-control" id="description" name="description" rows="5"><%= typeof book !== 'undefined' && book.description ? book.description : '' %></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label for="authors" class="form-label">Author</label>
+        <input type="text" class="form-control" id="authors" name="authors" value="<%= typeof book !== 'undefined' && book.authors ? book.authors : '' %>">
+    </div>
+
+    <div class="mb-3">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="favorite" name="favorite" value="true" <%= typeof book !== 'undefined' && book.favorite ? 'checked' : '' %>>
+            <label class="form-check-label" for="favorite">
+                Favorite
+            </label>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="fileCover" class="form-label">Cover</label>
+        <input type="text" class="form-control" id="fileCover" name="fileCover" value="<%= typeof book !== 'undefined' && book.fileCover ? book.fileCover : '' %>" placeholder="Cover URL">
+    </div>
+
+    <div class="mb-3">
+        <label for="fileName" class="form-label">File Name</label>
+        <input type="text" class="form-control" id="fileName" name="fileName" value="<%= typeof book !== 'undefined' && book.fileName ? book.fileName : '' %>">
+    </div>
+
+    <div class="mb-3">
+        <label for="fileBook" class="form-label">Book File</label>
+        <% if (typeof book !== 'undefined' && book.fileBook) { %>
+            <div class="alert alert-info mb-2">Current file: <%= book.fileName || 'Uploaded' %></div>
+        <% } %>
+        <input type="file" class="form-control" id="fileBook" name="fileBook" accept=".pdf,.epub,.txt,.doc,.docx">
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary me-2"><%= submitText || 'Save' %></button>
+        <a href="<%= cancelUrl %>" class="btn btn-primary">Cancel</a>
+    </div>
+</form>

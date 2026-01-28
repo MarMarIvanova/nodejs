@@ -11,6 +11,7 @@
   "author": "Maria Ivanova",
   "license": "ISC",
   "dependencies": {
+    "ejs": "^4.0.1",
     "express": "^5.2.1",
     "multer": "^2.0.2",
     "uuid": "^8.3.2"
