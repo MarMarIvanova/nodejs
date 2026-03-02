@@ -1,0 +1,53 @@
+CYWRJVW4LL:data m.panova$ docker run -d --name first_node -v "$(pwd)/data:/var/first/data" node:22.13.0 sleep infinity
+Unable to find image 'node:22.13.0' locally
+22.13.0: Pulling from library/node
+e474a4a4cbbf: Pull complete 
+d22b85d68f8a: Pull complete 
+936252136b92: Pull complete 
+94c5996c7a64: Pull complete 
+5e8de8f36c90: Pull complete 
+f5978ac161f0: Pull complete 
+cb9ea9ae26ea: Pull complete 
+79f574ce55c5: Pull complete 
+Digest: sha256:fa54405993eaa6bab6b6e460f5f3e945a2e2f07942ba31c0e297a7d9c2041f62
+Status: Downloaded newer image for node:22.13.0
+296e8646b24ce1f15a5f127abcd50a7d02e4db2288edfd9f288d74de6daea598
+CYWRJVW4LL:data m.panova$ docker ps
+CONTAINER ID   IMAGE                            COMMAND                  CREATED              STATUS              PORTS                                                                                                         NAMES
+296e8646b24c   node:22.13.0                     "docker-entrypoint.s…"   About a minute ago   Up About a minute                                                                                                                 first_node
+0d533ee11234   emails-emails                    "docker-entrypoint.s…"   8 months ago         Up 4 hours          0.0.0.0:3000->3000/tcp                                                                                        emails.local
+3ef0ed3d6b7e   rabbitmq:3.9-management-alpine   "docker-entrypoint.s…"   8 months ago         Up 4 hours          4369/tcp, 5671/tcp, 0.0.0.0:5672->5672/tcp, 15671/tcp, 15691-15692/tcp, 25672/tcp, 0.0.0.0:15672->15672/tcp   rabbit.local
+CYWRJVW4LL:data m.panova$ docker run -d --name second_node -v "$(pwd)/data:/var/second/data" node:22.13.0 sleep infinity
+691007851dfa54690ceae72e771001f65296b9aa3e32cb61c7518880314ef621
+CYWRJVW4LL:data m.panova$ docker exec -it first_node sh -c 'echo "Файл создан из контейнера first_node" > /var/first/data/from-first-node.txt'
+CYWRJVW4LL:data m.panova$ echo "Файл добавлен на хостовой машине" > data/from-host.txt
+CYWRJVW4LL:data m.panova$ docker exec -it second_node ls -la /var/second/data
+total 12
+drwxr-xr-x 4 root root  128 Mar  2 09:48 .
+drwxr-xr-x 3 root root 4096 Mar  2 09:45 ..
+-rw-r--r-- 1 root root   59 Mar  2 09:46 from-first-node.txt
+-rw-r--r-- 1 root root   61 Mar  2 09:48 from-host.txt
+CYWRJVW4LL:data m.panova$ docker exec -it second_node cat /var/second/data/from-first-node.txt
+Файл создан из контейнера first_node
+CYWRJVW4LL:data m.panova$ docker exec -it second_node cat /var/second/data/from-host.txt
+Файл добавлен на хостовой машине
+CYWRJVW4LL:data m.panova$ docker stop first_node second_node
+docker rm first_node second_node
+first_node
+second_node
+CYWRJVW4LL:data m.panova$ docker rm first_node second_node
+first_node
+second_node
+CYWRJVW4LL:data m.panova$ docker rmi node:22.13.0
+Untagged: node:22.13.0
+Untagged: node@sha256:fa54405993eaa6bab6b6e460f5f3e945a2e2f07942ba31c0e297a7d9c2041f62
+Deleted: sha256:b0b21a54292bb9cd180e8572cebb41daabb2f14f03a02fb20cee2a9c8e518333
+Deleted: sha256:1b95b1a289ee0abd1fea2269051dee1a37bdf6afcd085bafc2dac13da9553e5c
+Deleted: sha256:75f96b255bd0bb6820ec6e3ba76fa61e319bb0145a2a5c3e0ed5ac6f41d125af
+Deleted: sha256:b9205598096148dcf0d213e79eab030f9cf0105c92f9f15d15acd1bf0dd35043
+Deleted: sha256:1e403a9e9e68acd320e9899651969ad5824d74b7e91aea03c4b5a72ff685e8e3
+Deleted: sha256:e133a8c02d85fa528d3124972deda07811d123d2e2e6620d466258fac3b0bb5a
+Deleted: sha256:a62128d0f6d58f694fd7b0f65714af65afafb3c13e4646a03cc20b7f8cab3865
+Deleted: sha256:ec5bb05d69b00344db1d485e17a639281633cc6ec64cfbd6cb4bc8039618f64a
+Deleted: sha256:86d145e933bcdb6c14c873a57906ccde603e9f360e96a4ee4e7a0c8df1b0e82e
+CYWRJVW4LL:data m.panova$ 

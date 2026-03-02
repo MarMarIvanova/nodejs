@@ -1,0 +1,40 @@
+CYWRJVW4LL:nodejs m.panova$ docker run -it --name mynode -e NAME="Мария" -e SURNAME="Иванова" node:22.13.0
+Unable to find image 'node:22.13.0' locally
+22.13.0: Pulling from library/node
+e474a4a4cbbf: Pull complete 
+d22b85d68f8a: Pull complete 
+936252136b92: Pull complete 
+94c5996c7a64: Pull complete 
+5e8de8f36c90: Pull complete 
+f5978ac161f0: Pull complete 
+cb9ea9ae26ea: Pull complete 
+79f574ce55c5: Pull complete 
+Digest: sha256:fa54405993eaa6bab6b6e460f5f3e945a2e2f07942ba31c0e297a7d9c2041f62
+Status: Downloaded newer image for node:22.13.0
+Welcome to Node.js v22.13.0.
+Type ".help" for more information.
+> console.log('Привет, ' + process.env.NAME + ' ' + process.env.SURNAME + '!');
+Привет, Мария Иванова!
+undefined
+> 
+(To exit, press Ctrl+C again or Ctrl+D or type .exit)
+> 
+CYWRJVW4LL:nodejs m.panova$ docker stop mynode
+mynode
+CYWRJVW4LL:nodejs m.panova$ docker rm mynode
+mynode
+CYWRJVW4LL:nodejs m.panova$ docker rmi node:22.12.0
+Error: No such image: node:22.12.0
+CYWRJVW4LL:nodejs m.panova$ docker rmi node:22.13.0
+Untagged: node:22.13.0
+Untagged: node@sha256:fa54405993eaa6bab6b6e460f5f3e945a2e2f07942ba31c0e297a7d9c2041f62
+Deleted: sha256:b0b21a54292bb9cd180e8572cebb41daabb2f14f03a02fb20cee2a9c8e518333
+Deleted: sha256:1b95b1a289ee0abd1fea2269051dee1a37bdf6afcd085bafc2dac13da9553e5c
+Deleted: sha256:75f96b255bd0bb6820ec6e3ba76fa61e319bb0145a2a5c3e0ed5ac6f41d125af
+Deleted: sha256:b9205598096148dcf0d213e79eab030f9cf0105c92f9f15d15acd1bf0dd35043
+Deleted: sha256:1e403a9e9e68acd320e9899651969ad5824d74b7e91aea03c4b5a72ff685e8e3
+Deleted: sha256:e133a8c02d85fa528d3124972deda07811d123d2e2e6620d466258fac3b0bb5a
+Deleted: sha256:a62128d0f6d58f694fd7b0f65714af65afafb3c13e4646a03cc20b7f8cab3865
+Deleted: sha256:ec5bb05d69b00344db1d485e17a639281633cc6ec64cfbd6cb4bc8039618f64a
+Deleted: sha256:86d145e933bcdb6c14c873a57906ccde603e9f360e96a4ee4e7a0c8df1b0e82e
+CYWRJVW4LL:nodejs m.panova$ 

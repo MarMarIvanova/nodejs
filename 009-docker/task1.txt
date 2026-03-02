@@ -1,0 +1,89 @@
+CYWRJVW4LL:nodejs m.panova$ docker pull busybox:latest
+latest: Pulling from library/busybox
+b85757a5ca1a: Pull complete 
+Digest: sha256:b3255e7dfbcd10cb367af0d409747d511aeb66dfac98cf30e97e87e4207dd76f
+Status: Downloaded newer image for busybox:latest
+docker.io/library/busybox:latest
+CYWRJVW4LL:nodejs m.panova$ docker run --name pinger busybox:latest ping -c 7 netology.ru
+PING netology.ru (51.250.51.8): 56 data bytes
+64 bytes from 51.250.51.8: seq=0 ttl=36 time=167.304 ms
+64 bytes from 51.250.51.8: seq=1 ttl=36 time=162.456 ms
+64 bytes from 51.250.51.8: seq=2 ttl=36 time=153.158 ms
+64 bytes from 51.250.51.8: seq=3 ttl=36 time=152.649 ms
+64 bytes from 51.250.51.8: seq=4 ttl=36 time=151.767 ms
+64 bytes from 51.250.51.8: seq=5 ttl=36 time=152.350 ms
+64 bytes from 51.250.51.8: seq=6 ttl=36 time=160.071 ms
+
+--- netology.ru ping statistics ---
+7 packets transmitted, 7 packets received, 0% packet loss
+round-trip min/avg/max = 151.767/157.107/167.304 ms
+CYWRJVW4LL:nodejs m.panova$ docker ps -a
+CONTAINER ID   IMAGE                            COMMAND                  CREATED          STATUS                     PORTS                                                                                                         NAMES
+23810d428fd8   busybox:latest                   "ping -c 7 netology.…"   12 seconds ago   Exited (0) 5 seconds ago                                                                                                                 pinger
+bf5b3f772476   mongo:7                          "docker-entrypoint.s…"   3 weeks ago      Exited (255) 5 days ago    127.0.0.1:27017-27019->27017-27019/tcp                                                                        mongo
+0d533ee11234   emails-emails                    "docker-entrypoint.s…"   8 months ago     Up 3 hours                 0.0.0.0:3000->3000/tcp                                                                                        emails.local
+eb839cb3e9db   axllent/mailpit:latest           "/mailpit"               8 months ago     Exited (255) 3 hours ago   0.0.0.0:1025->1025/tcp, 0.0.0.0:8025->8025/tcp, 1110/tcp                                                      mailpit
+3ef0ed3d6b7e   rabbitmq:3.9-management-alpine   "docker-entrypoint.s…"   8 months ago     Up 3 hours                 4369/tcp, 5671/tcp, 0.0.0.0:5672->5672/tcp, 15671/tcp, 15691-15692/tcp, 25672/tcp, 0.0.0.0:15672->15672/tcp   rabbit.local
+CYWRJVW4LL:nodejs m.panova$ docker logs pinger
+PING netology.ru (51.250.51.8): 56 data bytes
+64 bytes from 51.250.51.8: seq=0 ttl=36 time=167.304 ms
+64 bytes from 51.250.51.8: seq=1 ttl=36 time=162.456 ms
+64 bytes from 51.250.51.8: seq=2 ttl=36 time=153.158 ms
+64 bytes from 51.250.51.8: seq=3 ttl=36 time=152.649 ms
+64 bytes from 51.250.51.8: seq=4 ttl=36 time=151.767 ms
+64 bytes from 51.250.51.8: seq=5 ttl=36 time=152.350 ms
+64 bytes from 51.250.51.8: seq=6 ttl=36 time=160.071 ms
+
+--- netology.ru ping statistics ---
+7 packets transmitted, 7 packets received, 0% packet loss
+round-trip min/avg/max = 151.767/157.107/167.304 ms
+CYWRJVW4LL:nodejs m.panova$ docker start pinger
+pinger
+CYWRJVW4LL:nodejs m.panova$ docker ps -a
+CONTAINER ID   IMAGE                            COMMAND                  CREATED              STATUS                      PORTS                                                                                                         NAMES
+23810d428fd8   busybox:latest                   "ping -c 7 netology.…"   About a minute ago   Exited (0) 19 seconds ago                                                                                                                 pinger
+bf5b3f772476   mongo:7                          "docker-entrypoint.s…"   3 weeks ago          Exited (255) 5 days ago     127.0.0.1:27017-27019->27017-27019/tcp                                                                        mongo
+0d533ee11234   emails-emails                    "docker-entrypoint.s…"   8 months ago         Up 3 hours                  0.0.0.0:3000->3000/tcp                                                                                        emails.local
+eb839cb3e9db   axllent/mailpit:latest           "/mailpit"               8 months ago         Exited (255) 3 hours ago    0.0.0.0:1025->1025/tcp, 0.0.0.0:8025->8025/tcp, 1110/tcp                                                      mailpit
+3ef0ed3d6b7e   rabbitmq:3.9-management-alpine   "docker-entrypoint.s…"   8 months ago         Up 3 hours                  4369/tcp, 5671/tcp, 0.0.0.0:5672->5672/tcp, 15671/tcp, 15691-15692/tcp, 25672/tcp, 0.0.0.0:15672->15672/tcp   rabbit.local
+CYWRJVW4LL:nodejs m.panova$ docker logs pinger
+PING netology.ru (51.250.51.8): 56 data bytes
+64 bytes from 51.250.51.8: seq=0 ttl=36 time=167.304 ms
+64 bytes from 51.250.51.8: seq=1 ttl=36 time=162.456 ms
+64 bytes from 51.250.51.8: seq=2 ttl=36 time=153.158 ms
+64 bytes from 51.250.51.8: seq=3 ttl=36 time=152.649 ms
+64 bytes from 51.250.51.8: seq=4 ttl=36 time=151.767 ms
+64 bytes from 51.250.51.8: seq=5 ttl=36 time=152.350 ms
+64 bytes from 51.250.51.8: seq=6 ttl=36 time=160.071 ms
+
+--- netology.ru ping statistics ---
+7 packets transmitted, 7 packets received, 0% packet loss
+round-trip min/avg/max = 151.767/157.107/167.304 ms
+PING netology.ru (51.250.51.8): 56 data bytes
+64 bytes from 51.250.51.8: seq=0 ttl=36 time=169.402 ms
+64 bytes from 51.250.51.8: seq=1 ttl=36 time=155.603 ms
+64 bytes from 51.250.51.8: seq=2 ttl=36 time=152.811 ms
+64 bytes from 51.250.51.8: seq=3 ttl=36 time=155.120 ms
+64 bytes from 51.250.51.8: seq=4 ttl=36 time=172.974 ms
+64 bytes from 51.250.51.8: seq=5 ttl=36 time=156.685 ms
+64 bytes from 51.250.51.8: seq=6 ttl=36 time=152.252 ms
+
+--- netology.ru ping statistics ---
+7 packets transmitted, 7 packets received, 0% packet loss
+round-trip min/avg/max = 152.252/159.263/172.974 ms
+CYWRJVW4LL:nodejs m.panova$ docker stop pinger
+pinger
+CYWRJVW4LL:nodejs m.panova$ docker rm pinger
+pinger
+CYWRJVW4LL:nodejs m.panova$ docker ps -a
+CONTAINER ID   IMAGE                            COMMAND                  CREATED        STATUS                     PORTS                                                                                                         NAMES
+bf5b3f772476   mongo:7                          "docker-entrypoint.s…"   3 weeks ago    Exited (255) 5 days ago    127.0.0.1:27017-27019->27017-27019/tcp                                                                        mongo
+0d533ee11234   emails-emails                    "docker-entrypoint.s…"   8 months ago   Up 3 hours                 0.0.0.0:3000->3000/tcp                                                                                        emails.local
+eb839cb3e9db   axllent/mailpit:latest           "/mailpit"               8 months ago   Exited (255) 3 hours ago   0.0.0.0:1025->1025/tcp, 0.0.0.0:8025->8025/tcp, 1110/tcp                                                      mailpit
+3ef0ed3d6b7e   rabbitmq:3.9-management-alpine   "docker-entrypoint.s…"   8 months ago   Up 3 hours                 4369/tcp, 5671/tcp, 0.0.0.0:5672->5672/tcp, 15671/tcp, 15691-15692/tcp, 25672/tcp, 0.0.0.0:15672->15672/tcp   rabbit.local
+CYWRJVW4LL:nodejs m.panova$ docker rmi busybox
+Untagged: busybox:latest
+Untagged: busybox@sha256:b3255e7dfbcd10cb367af0d409747d511aeb66dfac98cf30e97e87e4207dd76f
+Deleted: sha256:cd9176cd36f99ec4cae927afa38448e8a9592e5277252f62926defa6aafad0f5
+Deleted: sha256:43f051b5fedf83ee1f8a54fa2fc1d1b85d7cf88b69b2604bc76d679c4fe0a9b7
+CYWRJVW4LL:nodejs m.panova$ 
