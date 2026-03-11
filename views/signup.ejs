@@ -1,0 +1,35 @@
+<%- include('partials/header', { title: 'Registration' }) %>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h2 class="card-title h5 mb-4">Registration</h2>
+          <% if (typeof message !== 'undefined' && message) { %>
+            <div class="alert alert-danger py-2" role="alert"><%= message %></div>
+          <% } %>
+          <form action="/api/user/signup" method="post">
+            <div class="mb-3">
+              <label for="username" class="form-label">Login</label>
+              <input type="text" class="form-control" id="username" name="username" required />
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="password" name="password" required />
+            </div>
+            <div class="mb-3">
+              <label for="displayName" class="form-label">Name (optional)</label>
+              <input type="text" class="form-control" id="displayName" name="displayName" />
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email (optional)</label>
+              <input type="email" class="form-control" id="email" name="email" />
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Register</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('partials/footer') %>

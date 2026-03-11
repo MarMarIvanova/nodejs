@@ -1,4 +1,5 @@
 const express = require('express');
+const passport = require('../db/passport');
 const { v4: uuid } = require('uuid');
 const store = require('../store');
 const router = express.Router();
@@ -7,6 +8,84 @@ const { BookModel } = require('../models/BookModel');
 const upload = require('../middleware/upload');
 const path = require('path');
 
+router.get('/api/user/login', (req, res) => {
+  if (req.isAuthenticated()) {
+    return res.redirect('/books');
+  }
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.render('login', { message: req.query.message });
+});
+
+router.get('/api/user/me', (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.redirect('/login?message=Authorization required');
+  }
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.render('profile', { user: req.user });
+});
+
+router.post('/api/user/login', (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) return next(err);
+    if (!user) {
+      return res.redirect('/login?message=' + encodeURIComponent(info?.message || 'Login error'));
+    }
+    req.login(user, (loginErr) => {
+      if (loginErr) return next(loginErr);
+      return res.redirect('/api/user/me');
+    });
+  })(req, res, next);
+});
+
+router.post('/api/user/signup', (req, res, next) => {
+  const { username, password, displayName, email } = req.body;
+  if (!username || !password) {
+    return res.redirect('/signup?message=' + encodeURIComponent('Please enter login and password'));
+  }
+  const { createUser } = require('../db/users');
+  createUser(username, password, displayName, email, (err, user) => {
+    if (err) {
+      return res.redirect('/signup?message=' + encodeURIComponent(err.message || 'Registration error'));
+    }
+    req.login(user, (loginErr) => {
+      if (loginErr) return next(loginErr);
+      return res.redirect('/api/user/me');
+    });
+  });
+});
+
+router.get('/logout', (req, res, next) => {
+  req.logout((err) => {
+    if (err) return next(err);
+    res.redirect('/');
+  });
+});
+
+router.get('/login', (req, res) => {
+  if (req.isAuthenticated()) {
+    return res.redirect('/books');
+  }
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.render('login', { message: req.query.message });
+});
+
+router.get('/signup', (req, res) => {
+  if (req.isAuthenticated()) {
+    return res.redirect('/books');
+  }
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.render('signup', { message: req.query.message });
+});
+
+router.get('/profile', (req, res) => res.redirect('/api/user/me'));
+router.get('/api/user', (req, res) => {
+  if (req.isAuthenticated()) {
+    res.redirect('/books');
+  } else {
+    res.redirect('/');
+  }
+});
+router.get('/home', (req, res) => res.render('home', { user: req.user || null }));
 
 router.get('/books', (req, res) => {
     const {books} = store;
@@ -114,14 +193,12 @@ router.post('/books/:id/delete', (req, res) => {
 });
 
 router.get('/', (req, res) => {
-    res.redirect('/books');
-})
-
-router.get('/api/user/login', (req, res) => {
-    const {user} = store
-    res.status(201)
-    res.json(user)
-})
+  if (req.isAuthenticated()) {
+    return res.redirect('/books');
+  }
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.render('home', { user: req.user || null });
+});
 
 router.get('/api/books', async (req, res) => {
     try {

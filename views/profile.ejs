@@ -1,0 +1,26 @@
+<%- include('partials/header', { title: 'Profile' }) %>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h1 class="card-title h4 mb-4">Profile</h1>
+          <p class="mb-2">
+            <b>ID:</b>         <%= user.id %><br />
+            <b>Username:</b>   <%= user.username %><br />
+            <b>Name:</b>       <%= user.displayName || '—' %><br />
+            <% if (user.emails && user.emails.length) { %>
+              <b>Email:</b>  <%= user.emails[0].value %><br />
+            <% } %>
+          </p>
+          <hr class="my-4" />
+          <div class="d-grid gap-2">
+            <a href="/books" class="btn btn-primary">To the list of books</a>
+            <a href="/logout" class="btn btn-outline-secondary">Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('partials/footer') %>
