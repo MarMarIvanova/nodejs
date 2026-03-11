@@ -1,0 +1,19 @@
+services:
+  library:
+    build: .
+    ports:
+      - "3001:3001"
+    environment:
+      - COUNTER_URL=http://counter:3002
+    depends_on:
+      - counter
+
+  counter:
+    build: ./counter
+    ports:
+      - "3002:3002"
+    volumes:
+      - counter_data:/app/data
+
+volumes:
+  counter_data:

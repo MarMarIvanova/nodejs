@@ -10,6 +10,7 @@
                     <% if (book.favorite) { %>
                         <span class="badge bg-warning text-dark">Favorite</span>
                     <% } %>
+                    <p class="text-muted mb-0 mt-2">Views: <%= typeof viewCount !== 'undefined' ? viewCount : 0 %></p>
                 </div>
 
                 <div class="mb-3">

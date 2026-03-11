@@ -27,16 +27,27 @@ router.get('/books/:id/update', (req, res) => {
     res.render('update', { book });
 });
 
-router.get('/books/:id', (req, res) => {
-    const {books} = store;
-    const {id} = req.params;
+router.get('/books/:id', async (req, res) => {
+    const { books } = store;
+    const { id } = req.params;
     const book = books.find(el => el.id === id);
-    
+
     if (!book) {
         return res.status(404).send('Book not found');
     }
-    
-    res.render('view', { book });
+
+    let viewCount = 0;
+    const counterUrl = process.env.COUNTER_URL || 'http://localhost:3002';
+    try {
+        await fetch(`${counterUrl}/counter/${id}/incr`, { method: 'POST' });
+        const counterRes = await fetch(`${counterUrl}/counter/${id}`);
+        const data = await counterRes.json();
+        viewCount = data.count ?? 0;
+    } catch (err) {
+        console.error('Counter service error:', err.message);
+    }
+
+    res.render('view', { book, viewCount });
 });
 
 router.post('/books/create', upload.single('fileBook'), (req, res) => {

@@ -1,0 +1,12 @@
+node_modules
+.git
+.gitignore
+*.log
+.env
+.env.*
+README.md
+009-docker
+counter
+public
+Dockerfile
+.dockerignore
