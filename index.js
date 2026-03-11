@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 
+const { connect } = require('./db/mongoose');
 const logger = require('./middleware/logger');
 const error404 = require('./middleware/err-404');
 const error = require('./middleware/error-handling');
@@ -24,6 +25,14 @@ app.use(error404)
 app.use(error)
 
 const PORT = process.env.PORT || 3001
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+
+connect()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error('Failed to start server:', err);
+    process.exit(1);
+  });

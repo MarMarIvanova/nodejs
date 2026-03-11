@@ -1,19 +1,45 @@
 services:
+  mongo:
+    image: mongo:7
+    restart: always
+    networks:
+      - app
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - mongo_data:/data/db
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    networks:
+      - app
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/?authSource=admin
+      ME_CONFIG_BASICAUTH_ENABLED: true
+      ME_CONFIG_BASICAUTH_USERNAME: mongoexpressuser
+      ME_CONFIG_BASICAUTH_PASSWORD: mongoexpresspass
+    depends_on:
+      - mongo
+
   library:
     build: .
+    restart: always
+    networks:
+      - app
     ports:
       - "3001:3001"
     environment:
-      - COUNTER_URL=http://counter:3002
+      MONGO_URI: mongodb://root:example@mongo:27017/library?authSource=admin
     depends_on:
-      - counter
+      - mongo
 
-  counter:
-    build: ./counter
-    ports:
-      - "3002:3002"
-    volumes:
-      - counter_data:/app/data
+networks:
+  app:
+    driver: bridge
 
 volumes:
-  counter_data:
+  mongo_data:

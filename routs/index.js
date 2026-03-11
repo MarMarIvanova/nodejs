@@ -1,7 +1,9 @@
-const express = require('express')
-const store = require('../store')
-const router = express.Router()
+const express = require('express');
+const { v4: uuid } = require('uuid');
+const store = require('../store');
+const router = express.Router();
 const Book = require('../models/book');
+const { BookModel } = require('../models/BookModel');
 const upload = require('../middleware/upload');
 const path = require('path');
 
@@ -121,114 +123,120 @@ router.get('/api/user/login', (req, res) => {
     res.json(user)
 })
 
-router.get('/api/books', (req, res) => {
-    const {books} = store
-    res.json(books)
-})
-
-router.get('/api/books/:id', (req, res) => {
-    const {books} = store
-    const {id} = req.params
-    const idx = books.findIndex(el => el.id === id)
-
-    if( idx !== -1) {
-        res.json(books[idx])
-    } else {
-        res.status(404)
-        res.json('404 | page not found')
+router.get('/api/books', async (req, res) => {
+    try {
+        const books = await BookModel.find().lean();
+        res.json(books);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json('Internal server error');
     }
-})
-
-router.post('/api/books/', upload.single('fileBook'), (req, res) => {
-    const {books} = store;
-    const {title, description, authors, favorite, fileCover, fileName} = req.body;
-    
-    const fileBook = req.file ? req.file.path : '';
-
-    const newBook = new Book(
-        title, 
-        description, 
-        authors, 
-        favorite === 'true' || favorite === true,
-        fileCover,
-        fileName,
-        fileBook
-    );
-    
-    books.push(newBook);
-
-    res.status(201);
-    res.json(newBook);
 });
 
-router.put('/api/books/:id', (req, res) => {
-    const {books} = store
-    const {title, description, authors, favorite, fileCover, fileName} = req.body
-    const {id} = req.params
-    const idx = books.findIndex(el => el.id === id)
-
-    if (idx !== -1){
-        books[idx] = {
-            ...books[idx],
-            title,
-            description,
-            authors,
-            favorite,
-            fileCover,
-            fileName
+router.get('/api/books/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const book = await BookModel.findOne({ id }).lean();
+        if (!book) {
+            return res.status(404).json('404 | page not found');
         }
-
-        res.json(books[idx])
-    } else {
-        res.status(404)
-        res.json('404 | page not found')
+        res.json(book);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json('Internal server error');
     }
-})
+});
 
-router.delete('/api/books/:id', (req, res) => {
-    const {books} = store
-    const {id} = req.params
-    const idx = books.findIndex(el => el.id === id)
-     
-    if(idx !== -1){
-        books.splice(idx, 1)
-        res.json(true)
-    } else {
-        res.status(404)
-        res.json('404 | page not found')
+router.post('/api/books/', upload.single('fileBook'), async (req, res) => {
+    try {
+        const { title, description, authors, favorite, fileCover, fileName } = req.body;
+        const fileBook = req.file ? req.file.path : '';
+        const id = uuid();
+
+        const newBook = await BookModel.create({
+            id,
+            title: title || '',
+            description: description || '',
+            authors: authors || '',
+            favorite: favorite === 'true' || favorite === true ? 'true' : 'false',
+            fileCover: fileCover || '',
+            fileName: fileName || '',
+            fileBook,
+        });
+
+        res.status(201);
+        res.json(newBook.toObject());
+    } catch (err) {
+        console.error(err);
+        res.status(500).json('Internal server error');
     }
-})
+});
 
-router.get('/api/books/:id/download', (req, res) => {
-    const {books} = store;
-    const {id} = req.params;
-    const book = books.find(el => el.id === id);
+router.put('/api/books/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { title, description, authors, favorite, fileCover, fileName } = req.body;
 
-    if (!book) {
-        res.status(404);
-        return res.json({ error: '404 | Book does not exist' });
+        const book = await BookModel.findOneAndUpdate(
+            { id },
+            { title, description, authors, favorite, fileCover, fileName },
+            { new: true }
+        ).lean();
+
+        if (!book) {
+            return res.status(404).json('404 | page not found');
+        }
+        res.json(book);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json('Internal server error');
     }
+});
 
-    if (!book.fileBook) {
-        res.status(404);
-        return res.json({ error: 'Book file does not exist' });
+router.delete('/api/books/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await BookModel.findOneAndDelete({ id });
+        if (!result) {
+            return res.status(404).json('404 | page not found');
+        }
+        res.json('ok');
+    } catch (err) {
+        console.error(err);
+        res.status(500).json('Internal server error');
     }
+});
 
-    const fs = require('fs');
-    if (!fs.existsSync(book.fileBook)) {
-        res.status(404);
-        return res.json({ error: 'Book file does not exist' });
-    }
-
-    const fileName = book.fileName || path.basename(book.fileBook);
-    res.download(book.fileBook, fileName, (err) => {
-        if (err) {
-            console.error('Downloading error:', err);
-            if (!res.headersSent) {
-                res.status(500).json({ error: 'Downloading error' });
+router.get('/api/books/:id/download', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const book = await BookModel.findOne({ id }).lean();
+        if (!book) {
+            res.status(404);
+            return res.json({ error: '404 | Book does not exist' });
+        }
+        if (!book.fileBook) {
+            res.status(404);
+            return res.json({ error: 'Book file does not exist' });
+        }
+        const fs = require('fs');
+        if (!fs.existsSync(book.fileBook)) {
+            res.status(404);
+            return res.json({ error: 'Book file does not exist' });
+        }
+        const fileName = book.fileName || path.basename(book.fileBook);
+        res.download(book.fileBook, fileName, (err) => {
+            if (err) {
+                console.error('Downloading error:', err);
+                if (!res.headersSent) {
+                    res.status(500).json({ error: 'Downloading error' });
+                }
             }
-        }
-    });
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json('Internal server error');
+    }
 });
 
 module.exports = router

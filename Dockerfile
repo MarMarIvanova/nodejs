@@ -2,7 +2,7 @@ FROM node:22-alpine
 
 WORKDIR /app
 
-COPY src/package*.json ./
+COPY package.json package-lock.json ./
 
 RUN npm ci --omit=dev
 
