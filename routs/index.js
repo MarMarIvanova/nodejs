@@ -128,7 +128,7 @@ router.get('/books/:id', async (req, res) => {
         console.error('Counter service error:', err.message);
     }
 
-    res.render('view', { book, viewCount });
+    res.render('view', { book, viewCount, user: req.user || null });
 });
 
 router.post('/books/create', upload.single('fileBook'), (req, res) => {
