@@ -7,6 +7,8 @@ const Book = require('../models/book');
 const { BookModel } = require('../models/BookModel');
 const upload = require('../middleware/upload');
 const path = require('path');
+const { container } = require('../container');
+const { BooksRepository } = require('../repositories/books-repository');
 
 router.get('/api/user/login', (req, res) => {
   if (req.isAuthenticated()) {
@@ -202,7 +204,8 @@ router.get('/', (req, res) => {
 
 router.get('/api/books', async (req, res) => {
     try {
-        const books = await BookModel.find().lean();
+        const repo = container.get(BooksRepository);
+        const books = await repo.getBooks();
         res.json(books);
     } catch (err) {
         console.error(err);
@@ -212,8 +215,8 @@ router.get('/api/books', async (req, res) => {
 
 router.get('/api/books/:id', async (req, res) => {
     try {
-        const { id } = req.params;
-        const book = await BookModel.findOne({ id }).lean();
+        const repo = container.get(BooksRepository);
+        const book = await repo.getBook(req.params.id);
         if (!book) {
             return res.status(404).json('404 | page not found');
         }
@@ -228,10 +231,10 @@ router.post('/api/books/', upload.single('fileBook'), async (req, res) => {
     try {
         const { title, description, authors, favorite, fileCover, fileName } = req.body;
         const fileBook = req.file ? req.file.path : '';
-        const id = uuid();
 
-        const newBook = await BookModel.create({
-            id,
+        const repo = container.get(BooksRepository);
+        const newBook = await repo.createBook({
+            id: uuid(),
             title: title || '',
             description: description || '',
             authors: authors || '',
@@ -242,7 +245,7 @@ router.post('/api/books/', upload.single('fileBook'), async (req, res) => {
         });
 
         res.status(201);
-        res.json(newBook.toObject());
+        res.json(newBook);
     } catch (err) {
         console.error(err);
         res.status(500).json('Internal server error');
@@ -251,14 +254,11 @@ router.post('/api/books/', upload.single('fileBook'), async (req, res) => {
 
 router.put('/api/books/:id', async (req, res) => {
     try {
-        const { id } = req.params;
         const { title, description, authors, favorite, fileCover, fileName } = req.body;
-
-        const book = await BookModel.findOneAndUpdate(
-            { id },
-            { title, description, authors, favorite, fileCover, fileName },
-            { new: true }
-        ).lean();
+        const repo = container.get(BooksRepository);
+        const book = await repo.updateBook(req.params.id, {
+            title, description, authors, favorite, fileCover, fileName,
+        });
 
         if (!book) {
             return res.status(404).json('404 | page not found');
@@ -272,8 +272,8 @@ router.put('/api/books/:id', async (req, res) => {
 
 router.delete('/api/books/:id', async (req, res) => {
     try {
-        const { id } = req.params;
-        const result = await BookModel.findOneAndDelete({ id });
+        const repo = container.get(BooksRepository);
+        const result = await repo.deleteBook(req.params.id);
         if (!result) {
             return res.status(404).json('404 | page not found');
         }
