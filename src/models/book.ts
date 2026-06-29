@@ -1,16 +1,25 @@
-const { v4: uuid } = require('uuid');
+import { v4 as uuid } from 'uuid';
 
-class Book {
+export class Book {
+    id: string;
+    title: string;
+    description: string;
+    authors: string;
+    favorite: boolean;
+    fileCover: string;
+    fileName: string;
+    fileBook: string;
+
     constructor(
-        title = '', 
-        description = '', 
-        authors = '', 
-        favorite = false, 
-        fileCover = '', 
+        title = '',
+        description = '',
+        authors = '',
+        favorite = false,
+        fileCover = '',
         fileName = '',
-        fileBook = ''
+        fileBook = '',
     ) {
-        this.id = uuid(),
+        this.id = uuid();
         this.title = title;
         this.description = description;
         this.authors = authors;
@@ -21,4 +30,4 @@ class Book {
     }
 }
 
-module.exports = Book;
+export default Book;

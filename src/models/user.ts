@@ -1,12 +1,13 @@
-const { v4: uuid } = require('uuid');
+import { v4 as uuid } from 'uuid';
 
-class User {
-    constructor(
-        mail = 'test@mail.ru', 
-    ) {
-        this.id = uuid(),
+export class User {
+    id: string;
+    mail: string;
+
+    constructor(mail = 'test@mail.ru') {
+        this.id = uuid();
         this.mail = mail;
     }
 }
 
-module.exports = User;
+export default User;

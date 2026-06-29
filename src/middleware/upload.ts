@@ -1,16 +1,15 @@
-const multer = require('multer')
+import multer from 'multer';
+import { Request } from 'express';
 
 const storage = multer.diskStorage({
-    destination(req, file, cb){
-        cb(null, 'public/')
+    destination(req: Request, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) {
+        cb(null, 'public/');
     },
-    filename(req, file, cb) {
-        cb(null, `${Date.now()}-${file.originalname}`)
-    }
-})
-
-const upload = multer({
-    storage: storage
+    filename(req: Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) {
+        cb(null, `${Date.now()}-${file.originalname}`);
+    },
 });
 
-module.exports = upload;
+const upload = multer({ storage });
+
+export default upload;

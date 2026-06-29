@@ -1,29 +1,39 @@
-const { injectable, decorate } = require('inversify');
-const { BookModel } = require('../models/BookModel');
+import { injectable } from 'inversify';
+import { BookModel, IBook } from '../models/BookModel';
 
-class BooksRepository {
-  async createBook(book) {
-    const created = await BookModel.create(book);
-    return created.toObject();
-  }
-
-  async getBook(id) {
-    return BookModel.findOne({ id }).lean();
-  }
-
-  async getBooks() {
-    return BookModel.find().lean();
-  }
-
-  async updateBook(id, updatedBook) {
-    return BookModel.findOneAndUpdate({ id }, updatedBook, { new: true }).lean();
-  }
-
-  async deleteBook(id) {
-    return BookModel.findOneAndDelete({ id }).lean();
-  }
+export interface BookInput {
+    id: string;
+    title?: string;
+    description?: string;
+    authors?: string;
+    favorite?: string;
+    fileCover?: string;
+    fileName?: string;
+    fileBook?: string;
 }
 
-decorate(injectable(), BooksRepository);
+export type BookUpdate = Partial<Omit<BookInput, 'id'>>;
 
-module.exports = { BooksRepository };
+@injectable()
+export class BooksRepository {
+    async createBook(book: BookInput): Promise<IBook> {
+        const created = await BookModel.create(book);
+        return created.toObject();
+    }
+
+    async getBook(id: string): Promise<IBook | null> {
+        return BookModel.findOne({ id }).lean<IBook>();
+    }
+
+    async getBooks(): Promise<IBook[]> {
+        return BookModel.find().lean<IBook[]>();
+    }
+
+    async updateBook(id: string, updatedBook: BookUpdate): Promise<IBook | null> {
+        return BookModel.findOneAndUpdate({ id }, updatedBook, { new: true }).lean<IBook>();
+    }
+
+    async deleteBook(id: string): Promise<IBook | null> {
+        return BookModel.findOneAndDelete({ id }).lean<IBook>();
+    }
+}
