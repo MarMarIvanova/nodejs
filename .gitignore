@@ -3,3 +3,4 @@ public/
 *.log
 002-TypeScript/dist/
 dist/
+.dockerignore
