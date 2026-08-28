@@ -1,77 +1,57 @@
-import { randomUUID } from 'node:crypto';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, Types } from 'mongoose';
 import { CreateBookDto } from './dto/create-book.dto.js';
 import { UpdateBookDto } from './dto/update-book.dto.js';
-import { Book } from './entities/book.entity.js';
+import { Book, BookDocument } from './schemas/book.schema.js';
 
 @Injectable()
 export class BooksService {
-  private books: Book[] = [
-    {
-      id: '1',
-      title: 'BookTitle',
-      description: 'Test description',
-      authors: 'Mar Ivanova',
-      favorite: false,
-      fileCover: '',
-      fileName: '',
-    },
-    {
-      id: '2',
-      title: 'BookTitle 2',
-      description: 'Test description Test description',
-      authors: 'Mar Ivanova',
-      favorite: true,
-      fileCover: '',
-      fileName: '',
-    },
-  ];
+  constructor(
+    @InjectModel(Book.name) private readonly bookModel: Model<BookDocument>,
+  ) {}
 
-  findAll(): Book[] {
-    return this.books;
+  async findAll(): Promise<BookDocument[]> {
+    return this.bookModel.find().exec();
   }
 
-  findOne(id: string): Book {
-    const book = this.books.find((item) => item.id === id);
+  async findOne(id: string): Promise<BookDocument> {
+    const book = Types.ObjectId.isValid(id)
+      ? await this.bookModel.findById(id).exec()
+      : null;
 
     if (!book) {
-      throw new NotFoundException(`Книга с id ${id} не найдена`);
+      throw new NotFoundException(`The book with id ${id} is not found`);
     }
 
     return book;
   }
 
-  create(dto: CreateBookDto): Book {
-    const book: Book = {
-      id: randomUUID(),
-      title: dto.title,
-      description: dto.description,
-      authors: dto.authors,
-      favorite: dto.favorite ?? false,
-      fileCover: dto.fileCover ?? '',
-      fileName: dto.fileName ?? '',
-    };
-
-    this.books.push(book);
-
-    return book;
+  async create(dto: CreateBookDto): Promise<BookDocument> {
+    return this.bookModel.create(dto);
   }
 
-  update(id: string, dto: UpdateBookDto): Book {
-    const book = this.findOne(id);
+  async update(id: string, dto: UpdateBookDto): Promise<BookDocument> {
+    const book = Types.ObjectId.isValid(id)
+      ? await this.bookModel
+          .findByIdAndUpdate(id, dto, { new: true, runValidators: true })
+          .exec()
+      : null;
 
-    Object.assign(book, dto);
-
-    return book;
-  }
-
-  remove(id: string): void {
-    const index = this.books.findIndex((item) => item.id === id);
-
-    if (index === -1) {
-      throw new NotFoundException(`Книга с id ${id} не найдена`);
+    if (!book) {
+      throw new NotFoundException(`The book with id ${id} is not found`);
     }
 
-    this.books.splice(index, 1);
+    return book;
+  }
+
+  async remove(id: string): Promise<void> {
+    const book = Types.ObjectId.isValid(id)
+      ? await this.bookModel.findByIdAndDelete(id).exec()
+      : null;
+
+    if (!book) {
+      throw new NotFoundException(`The book with id ${id} is not found`);
+    }
   }
 }

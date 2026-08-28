@@ -12,35 +12,38 @@ import {
 import { BooksService } from './books.service.js';
 import { CreateBookDto } from './dto/create-book.dto.js';
 import { UpdateBookDto } from './dto/update-book.dto.js';
-import type { Book } from './entities/book.entity.js';
+import type { BookDocument } from './schemas/book.schema.js';
 
 @Controller('books')
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
   @Get()
-  findAll(): Book[] {
+  async findAll(): Promise<BookDocument[]> {
     return this.booksService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Book {
+  async findOne(@Param('id') id: string): Promise<BookDocument> {
     return this.booksService.findOne(id);
   }
 
   @Post()
-  create(@Body() dto: CreateBookDto): Book {
+  async create(@Body() dto: CreateBookDto): Promise<BookDocument> {
     return this.booksService.create(dto);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() dto: UpdateBookDto): Book {
+  async update(
+    @Param('id') id: string,
+    @Body() dto: UpdateBookDto,
+  ): Promise<BookDocument> {
     return this.booksService.update(id, dto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id') id: string): void {
-    this.booksService.remove(id);
+  async remove(@Param('id') id: string): Promise<void> {
+    return this.booksService.remove(id);
   }
 }

@@ -4,3 +4,4 @@ public/
 002-TypeScript/dist/
 dist/
 .dockerignore
+*.tsbuildinfo
