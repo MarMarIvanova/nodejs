@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { createObserveModule } from '@nestjs/observe';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
+import { BookCommentsModule } from './book-comments/book-comments.module.js';
 import { BooksModule } from './books/books.module.js';
 
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
@@ -19,6 +20,7 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
         'mongodb://root:example@localhost:27017/library?authSource=admin',
     ),
     BooksModule,
+    BookCommentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
